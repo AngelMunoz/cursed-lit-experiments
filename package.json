@@ -1,0 +1,22 @@
+{
+  "name": "elmish_sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "dotnet tool restore",
+    "start": "dotnet fable src --watch --run snowpack dev",
+    "build": "dotnet fable snowpack build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "haunted": "4.8.2",
+    "lit": "^2.0.0-rc.3",
+    "lit-html": "2.0.0-rc.4"
+  },
+  "devDependencies": {
+    "snowpack": "3.8.6"
+  }
+}
