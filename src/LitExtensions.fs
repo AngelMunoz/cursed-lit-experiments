@@ -1,9 +1,6 @@
 module LitExtensions
 
 open Fable.Core
-open Fable.Core.JsInterop
-open Browser.Types
-
 
 [<ImportMember("lit"); Interface>]
 type ReactiveController =
@@ -21,7 +18,6 @@ type ReactiveControllerHost =
 
     abstract member updateComplete : bool
 
-
     abstract member addController : ReactiveController -> unit
 
     abstract member removeController : ReactiveController -> unit
@@ -31,6 +27,9 @@ type ReactiveControllerHost =
 
 [<ImportMember("lit")>]
 type LitElement() =
+
+    abstract member attributeChangedCallback : string -> unit
+    default _.attributeChangedCallback(name: string) : unit = jsNative
 
     abstract member attributeChangedCallback :
         string * string option * string option -> unit
@@ -77,6 +76,9 @@ type LitElement() =
 
     default _.requestUpdate(?name: string, ?oldValue: obj, ?options: obj) =
         jsNative
+
+    abstract member shouldUpdate : unit -> bool
+    default _.shouldUpdate() : bool = jsNative
 
     abstract member shouldUpdate : obj option -> bool
     default _.shouldUpdate(?_changedProperties: obj) : bool = jsNative

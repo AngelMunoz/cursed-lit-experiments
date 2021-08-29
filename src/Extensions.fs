@@ -9,3 +9,6 @@ type Event with
 
 [<Emit("customElements.define($0, $1)")>]
 let defineElement (name: string, ``component``: obj) = jsNative
+
+[<Emit("String")>]
+let JsString: obj = jsNative

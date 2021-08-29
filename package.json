@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@material/mwc-slider": "^0.22.1",
     "haunted": "4.8.2",
     "lit": "^2.0.0-rc.3",
     "lit-html": "2.0.0-rc.4"
