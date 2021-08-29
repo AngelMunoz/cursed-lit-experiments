@@ -9,6 +9,9 @@ open Lit.Feliz
 
 importSideEffects "./styles.css"
 
+type Event with
+    member this.value = (this.target :?> HTMLInputElement).value
+
 [<Emit("customElements.define($0, $1)")>]
 let defineElement (name: string, ``component``: obj) = jsNative
 
@@ -103,6 +106,7 @@ type LitElement() =
 
 type MyElement() =
     inherit LitElement()
+
     let mutable counter: int = 0
 
     override _.render() =
@@ -114,36 +118,64 @@ type MyElement() =
             </button>
             """
 
-[<Emit("MyElement.properties = { counter: {} }")>]
-let elProps: unit = jsNative
-
-elProps
-
-[<Emit("MyElement")>]
-let MyElementConstructor: obj = jsNative
-
-defineElement ("x-olv", MyElementConstructor)
-
 type MyFelizLitElement() =
     inherit LitElement()
-    let mutable counter: int = 0
+
+    let mutable email = ""
+    let mutable password = ""
+
+    let passwordField =
+        Html.section [
+            Html.label [ Html.text "Password" ]
+            Html.input [
+                Attr.typePassword
+                Attr.placeholder "password"
+                Ev.onInput (fun ev -> password <- ev.value)
+            ]
+        ]
+
+    let emailField =
+        Html.section [
+            Html.label [ Html.text "Email" ]
+            Html.input [
+                Attr.typeEmail
+                Attr.placeholder "email"
+                Ev.onInput (fun ev -> email <- ev.value)
+            ]
+        ]
 
     override _.render() =
         Html.article [
             Html.h1 "Hello, world!"
-            Html.button [
-                Ev.onClick (fun _ -> counter <- counter + 1)
-                Html.text $"Clicked {counter} times"
+            Html.form [
+                Ev.onSubmit
+                    (fun ev ->
+                        ev.preventDefault ()
+                        printfn $"Email: {email}, Password: {password}")
+                Html.fieldSet [
+                    emailField
+                    passwordField
+                    Html.button [ Html.text "Login" ]
+                ]
             ]
         ]
         |> Feliz.toLit
 
-[<Emit("MyFelizLitElement.properties = { counter: {} }")>]
+[<Emit("MyElement.properties = { counter: { state: true } }")>]
+let MyElementProperties: unit = jsNative
+
+[<Emit("MyFelizLitElement.properties = { email: { state: true }, password: { state: true } }")>]
 let MyFelizLitElementProperties: unit = jsNative
 
+
+MyElementProperties
 MyFelizLitElementProperties
 
-[<Emit("MyFelizLitElement")>]
-let MyFelizLitElement: obj = jsNative
+[<Emit("MyElement")>]
+let MyElementConstructor: unit = jsNative
 
+[<Emit("MyFelizLitElement")>]
+let MyFelizLitElement: unit = jsNative
+
+defineElement ("x-olv", MyElementConstructor)
 defineElement ("x-olv-2", MyFelizLitElement)
