@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Extensions.fs" />
+    <Compile Include="LitExtensions.fs" />
+    <Compile Include="Types.fs" />
+    <Compile Include="Controllers.fs" />
+    <Compile Include="App.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 
