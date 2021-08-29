@@ -5,6 +5,7 @@ open Fable.Core.JsInterop
 open Browser.Types
 
 open Lit
+open Lit.Feliz
 
 importSideEffects "./styles.css"
 
@@ -39,8 +40,16 @@ type ReactiveControllerHost =
 [<ImportMember("lit")>]
 type LitElement() =
 
-    abstract member attributeChangedCallback : string * string option * string option -> unit
-    default _.attributeChangedCallback(name: string, ?_old: string, ?value: string) : unit = jsNative
+    abstract member attributeChangedCallback :
+        string * string option * string option -> unit
+
+    default _.attributeChangedCallback
+        (
+            name: string,
+            ?_old: string,
+            ?value: string
+        ) : unit =
+        jsNative
 
     abstract member addController : ReactiveController -> unit
     default _.addController(controller: ReactiveController) = jsNative
@@ -67,8 +76,11 @@ type LitElement() =
     abstract member performUpdate : unit -> JS.Promise<obj>
     default _.performUpdate() : JS.Promise<obj> = jsNative
 
-    abstract member requestUpdate : string option * obj option * obj option -> unit
-    default _.requestUpdate(?name: string, ?oldValue: obj, ?options: obj) = jsNative
+    abstract member requestUpdate :
+        string option * obj option * obj option -> unit
+
+    default _.requestUpdate(?name: string, ?oldValue: obj, ?options: obj) =
+        jsNative
 
     abstract member shouldUpdate : obj option -> bool
     default _.shouldUpdate(?_changedProperties: obj) : bool = jsNative
@@ -111,3 +123,27 @@ elProps
 let MyElementConstructor: obj = jsNative
 
 defineElement ("x-olv", MyElementConstructor)
+
+type MyFelizLitElement() =
+    inherit LitElement()
+    let mutable counter: int = 0
+
+    override _.render() =
+        Html.article [
+            Html.h1 "Hello, world!"
+            Html.button [
+                Ev.onClick (fun _ -> counter <- counter + 1)
+                Html.text $"Clicked {counter} times"
+            ]
+        ]
+        |> Feliz.toLit
+
+[<Emit("MyFelizLitElement.properties = { counter: {} }")>]
+let MyFelizLitElementProperties: unit = jsNative
+
+MyFelizLitElementProperties
+
+[<Emit("MyFelizLitElement")>]
+let MyFelizLitElement: obj = jsNative
+
+defineElement ("x-olv-2", MyFelizLitElement)
